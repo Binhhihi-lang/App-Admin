@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_nav_dashboard"
+        android:title="Dashboard" />
+    <item
+        android:id="@+id/nav_flight"
+        android:icon="@drawable/ic_nav_flight"
+        android:title="Flights" />
+
+    <item
+        android:id="@+id/nav_order"
+        android:icon="@drawable/ic_nav_order"
+        android:title="Orders" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_nav_profile"
+        android:title="Profile" />
+</menu>
