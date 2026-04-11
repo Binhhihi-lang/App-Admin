@@ -16,13 +16,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdminApp">
         <activity
+            android:name=".Activities.Activities.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Activities.VerifyOtpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Activities.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Activities.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.Activities.AdminEditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.Activities.AdminProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.Activities.DashboardActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.Activities.SignupActivity"
@@ -32,7 +38,7 @@
             android:exported="true"
             android:label="Login" />
         <activity
-            android:name=".Activities.Activities.MainActivity"
+            android:name=".Activities.Activities.SplashActivity"
             android:exported="true">
 
             <!-- Mở lên đầu tiên -->

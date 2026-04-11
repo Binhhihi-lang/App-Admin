@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F6F9">
@@ -14,12 +15,13 @@
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbarInfoProfile"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
             app:layout_anchor="@+id/appBarLayout"
             app:layout_anchorGravity="center"
+            android:layout_marginTop="@dimen/spacing_large"
             app:navigationIcon="@drawable/ic_back"
             app:navigationIconTint="@color/textTitle"
             app:title="Thông tin tài khoản"
@@ -32,9 +34,9 @@
                 android:layout_height="35dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp"
-                android:src="@drawable/avatar"
                 android:background="@color/white"
                 android:padding="2dp"
+                android:src="@drawable/avatar"
                 app:shapeAppearanceOverlay="@style/CircleImage"
                 app:strokeColor="#BDBDBD"
                 app:strokeWidth="1dp" />
@@ -50,7 +52,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="100dp">
+            android:paddingBottom="80dp">
 
             <View
                 android:id="@+id/viewHeader"
@@ -65,7 +67,7 @@
                 android:id="@+id/imgAvatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="40dp"
                 android:padding="4dp"
                 android:src="@drawable/avatar"
                 app:strokeColor="@color/white"
@@ -282,7 +284,12 @@
                         app:drawableTint="#0175F3"
                         android:drawablePadding="16dp" />
 
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0" android:layout_marginStart="60dp" android:layout_marginEnd="20dp"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#F0F0F0"
+                        android:layout_marginStart="60dp"
+                        android:layout_marginEnd="20dp"/>
 
                     <TextView
                         android:id="@+id/btnLanguage"
@@ -324,22 +331,6 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraint="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="@color/blue_primary"
-        android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/nav_item_color_state"
-        app:itemTextColor="@color/nav_item_color_state"
-        app:labelVisibilityMode="labeled" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

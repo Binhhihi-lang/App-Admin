@@ -22,6 +22,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
     private Button btnLogin;
 
+    private TextView tvForgotPassword;
+
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -70,6 +72,13 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v-> loginUser());
 
+        // Xử lý khi người dùng quên mật khẩu
+        tvForgotPassword = findViewById(R.id.tv_forgot_password);
+        tvForgotPassword.setOnClickListener(v->{
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
+
 
     }
     private void loginUser(){
@@ -83,24 +92,30 @@ public class LoginActivity extends AppCompatActivity {
         // Gọi Firebase Auth để kiểm tra
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
+                        // 1. Đăng nhập thành công
                         String uid = mAuth.getCurrentUser().getUid();
-
 
                         mDatabase.child("Users").child(uid).get().addOnCompleteListener(dbTask -> {
                             if (dbTask.isSuccessful()) {
                                 User user = dbTask.getResult().getValue(User.class);
 
                                 if (user != null && user.role == 1) {
-                                    // LÀ ADMIN -> Vào trang quản trị
-                                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                                } else {
-                                    // LÀ USER -> Vào trang đặt vé
+                                    // Vào trang quản trị
                                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    finish(); // Chỉ đóng trang Login khi chuyển trang thành công
+                                } else {
+                                    // LÀ CLIENT -> Báo lỗi quyền hạn
+                                    Toast.makeText(LoginActivity.this, "Bạn không có quyền truy cập Admin!", Toast.LENGTH_LONG).show();
+
                                 }
-                                finish();
                             }
                         });
+                    } else {
+                        //Đăng nhập thất bại (Sai email, sai pass, hoặc mất mạng)
+                        //  task.getException() không bị null
+                        String errorMessage = task.getException() != null ? task.getException().getMessage() : "Đăng nhập thất bại";
+                        Toast.makeText(LoginActivity.this, "Lỗi: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 });
     }

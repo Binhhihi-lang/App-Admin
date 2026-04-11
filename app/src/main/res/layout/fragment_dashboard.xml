@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen"
-    tools:context=".Activities.Activities.DashboardActivity">
+    tools:context=".Activities.DashboardFragment">
 
     <TextView
         android:id="@+id/tv_header_title"
@@ -65,7 +65,7 @@
             app:cornerRadius="24dp"
             app:elevation="0dp" />
     </LinearLayout>
-<!--Đổ bóng cardElevation    -->
+    <!--Đổ bóng cardElevation    -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_flight_form"
         android:layout_width="match_parent"
@@ -241,7 +241,7 @@
                 app:layout_constraintStart_toStartOf="@+id/card_to"
                 app:layout_constraintTop_toTopOf="@+id/card_to" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_swap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -498,19 +498,6 @@
 
 
     </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="@color/blue_primary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/nav_item_color_state"
-        app:itemTextColor="@color/nav_item_color_state"
-        app:labelVisibilityMode="labeled"
-        app:elevation="16dp" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

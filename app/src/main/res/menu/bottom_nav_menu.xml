@@ -1,19 +1,24 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/nav_dashboard"
         android:icon="@drawable/ic_nav_dashboard"
-        android:title="Dashboard" />
+        android:title="Dashboard"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/nav_flight"
         android:icon="@drawable/ic_nav_flight"
-        android:title="Flights" />
+        android:title="Flights"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/nav_order"
         android:icon="@drawable/ic_nav_order"
-        android:title="Orders" />
+        android:title="Orders"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_nav_profile"
-        android:title="Profile" />
+        android:title="Profile"
+        app:showAsAction="always"/>
 </menu>

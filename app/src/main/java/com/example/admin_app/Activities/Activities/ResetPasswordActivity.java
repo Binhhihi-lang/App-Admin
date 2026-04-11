@@ -7,14 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.admin_app.R;
 
-
-public class DashboardActivity extends AppCompatActivity {
+public class ResetPasswordActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_reset_password);
 
     }
 }

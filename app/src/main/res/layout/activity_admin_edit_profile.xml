@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:navigationIcon="@drawable/ic_back"
+        android:layout_marginTop="@dimen/spacing_large"
         app:navigationIconTint="#0175F3"
         app:title="Chỉnh sửa thông tin"
         app:titleCentered="true"
@@ -108,7 +109,7 @@
                         android:drawablePadding="12dp"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="Nguyen Xuan Ly"
+                        android:hint="Nguyen Xuan Ly"
                         android:textColor="#212121"
                         android:textSize="15sp"
                         android:inputType="textPersonName"
@@ -136,7 +137,7 @@
                         android:text="nguyenxuanly@gmail.com"
                         android:textColor="#9E9E9E"
                         android:textSize="15sp"
-                         />
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -155,10 +156,10 @@
                         android:drawablePadding="12dp"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="+84 987 654 321"
-                        android:textColor="#212121"
+                        android:hint="+84 987 654 321"
                         android:textSize="15sp"
                         android:inputType="phone"
+                        android:maxLength="10"
                         app:drawableTint="#0175F3" />
 
                     <TextView
@@ -227,12 +228,12 @@
                         android:drawablePadding="12dp"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="012345678912"
+                        android:hint="012345678912"
                         android:textColor="#212121"
                         android:textSize="15sp"
                         android:inputType="number"
+                        android:maxLength="12"
                         app:drawableTint="#0175F3" />
-
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -265,21 +266,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraint="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="@color/blue_primary"
-        android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/nav_item_color_state"
-        app:itemTextColor="@color/nav_item_color_state"
-        app:labelVisibilityMode="labeled" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
