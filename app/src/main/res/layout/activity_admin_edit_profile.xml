@@ -28,7 +28,7 @@
             android:layout_height="45dp"
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/avatar"
+
             android:background="@color/white"
             android:padding="2dp"
             app:shapeAppearanceOverlay="@style/CircleImage"
@@ -61,9 +61,9 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imgEditAvatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:padding="4dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:padding="2dp"
                     android:src="@drawable/avatar"
                     app:strokeColor="@color/white"
                     app:strokeWidth="2dp"
@@ -71,6 +71,22 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
+
+                <!--  android:scaleType="center" cho icon vào trung tâm -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgChangeAvatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_camera"
+                    android:padding="2dp"
+                    android:scaleType="center"
+                    android:background="@color/primary_blue"
+                    app:shapeAppearanceOverlay="@style/CircleImage"
+                    app:layout_constraintBottom_toBottomOf="@id/imgEditAvatar"
+                    app:layout_constraintEnd_toEndOf="@id/imgEditAvatar"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="4dp"
+                    />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -129,6 +145,7 @@
                         android:layout_height="52dp"
                         android:background="@color/bg_input_field"
                         android:drawableStart="@drawable/ic_profile_email"
+                        android:drawableEnd="@drawable/ic_lock"
                         app:drawableTint="#0175F3"
                         android:drawablePadding="12dp"
                         android:paddingStart="16dp"

@@ -13,7 +13,20 @@
           "package_name": "com.example.admin_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "471903679923-asac8l8pg4e0c08g6oumvpk72h3e3aps.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.admin_app",
+            "certificate_hash": "3e5fc4f0f12f9dd910d7949daa498351da9ab7a5"
+          }
+        },
+        {
+          "client_id": "471903679923-fhdod172h93pcsteqo70h2gsf8doc7lo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA6slXTT4Zv-r8k8NfkkwTT8zHafkjJdMM"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471903679923-fhdod172h93pcsteqo70h2gsf8doc7lo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -32,7 +50,12 @@
           "package_name": "com.example.flight_booking_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "471903679923-fhdod172h93pcsteqo70h2gsf8doc7lo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA6slXTT4Zv-r8k8NfkkwTT8zHafkjJdMM"
@@ -40,7 +63,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471903679923-fhdod172h93pcsteqo70h2gsf8doc7lo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
