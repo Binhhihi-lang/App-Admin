@@ -1,4 +1,4 @@
-package com.example.admin_app.Activities.Models;
+package com.example.admin_app.Models;
 
 public class User {
     private String fullName;
@@ -10,7 +10,6 @@ public class User {
     private String gender;
     private String avatar;
     private String password;
-
 
 
     public User() {

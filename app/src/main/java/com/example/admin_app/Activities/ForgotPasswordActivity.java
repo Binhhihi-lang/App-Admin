@@ -1,4 +1,4 @@
-package com.example.admin_app.Activities.Activities;
+package com.example.admin_app.Activities;
 
 import static android.content.ContentValues.TAG;
 

@@ -1,4 +1,4 @@
-package com.example.admin_app.Activities.Fragment;
+package com.example.admin_app.Fragment;
 
 import android.os.Bundle;
 

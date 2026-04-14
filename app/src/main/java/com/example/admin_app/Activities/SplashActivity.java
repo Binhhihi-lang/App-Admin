@@ -1,4 +1,4 @@
-package com.example.admin_app.Activities.Activities;
+package com.example.admin_app.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
