@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
+    // ./gradlew signingReport
     TextView tvGoToSignIn;
 
     private EditText etFullName, etEmail, etPassword;

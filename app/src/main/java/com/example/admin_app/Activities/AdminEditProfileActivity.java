@@ -1,13 +1,19 @@
 package com.example.admin_app.Activities;
 
 import static android.app.PendingIntent.getActivity;
+import static android.util.Base64.encodeToString;
+
+import static java.text.DateFormat.DEFAULT;
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,19 +24,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.UploadCallback;
+import com.cloudinary.android.preprocess.BitmapEncoder;
+import com.cloudinary.android.preprocess.DimensionsValidator;
+import com.cloudinary.android.preprocess.ImagePreprocessChain;
 import com.example.admin_app.Models.User;
-import com.example.admin_app.Fragment.ProfileFragment;
 import com.example.admin_app.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,19 +44,28 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class AdminEditProfileActivity extends AppCompatActivity {
 
     MaterialToolbar toolbar ;
     EditText edtFullName, etdEmail, edtPhone, edtGender, edtDob, edtCccd;
-    ImageView imgAvatar, imgSmallAvatar,imgchangeAvatar;
+    ImageView imgAvatar, imgSmallAvatar, imgChangeAvatar;
     Button btnSaveChanges;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
+    ProgressDialog progressDialog;
     private Uri muri;
 
 
@@ -60,26 +75,21 @@ public class AdminEditProfileActivity extends AppCompatActivity {
 
     // xin quyền mở ảnh
     public static final int MY_REQUEST_CODE = 10;
-    // chọn ảnh từ gallery
+    //chọn ảnh từ gallery
     private final ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                // xử lý kết quả trả về
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK){
-                        Intent intent = result.getData();
-                        if (intent == null){
-                            return;
-                        }
-                        Uri uri = intent.getData();
-                        setMuri(uri);
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            setBitmapImageView(bitmap);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    muri = result.getData().getData();
+
+                    Glide.with(this)
+                            .load(muri)
+                            .override(300, 300)
+                            .into(imgAvatar);
+
+                    Glide.with(this)
+                            .load(muri)
+                            .override(100, 100)
+                            .into(imgSmallAvatar);
                 }
             });
 
@@ -99,17 +109,17 @@ public class AdminEditProfileActivity extends AppCompatActivity {
         edtCccd = findViewById(R.id.edtCccd);
         imgAvatar = findViewById(R.id.imgEditAvatar);
         imgSmallAvatar = findViewById(R.id.imgSmallAvatar);
+        imgChangeAvatar = findViewById(R.id.imgChangeAvatar);
         btnSaveChanges = findViewById(R.id.btnSaveChanges);
+        progressDialog = new ProgressDialog(this);
 
-
-
+        initCloudinary();
 
         // nút back lại
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(view ->
                 getOnBackPressedDispatcher().onBackPressed()
         );
-
 
         // date
         edtDob.setOnClickListener(v -> {
@@ -147,13 +157,26 @@ public class AdminEditProfileActivity extends AppCompatActivity {
             builder.show();
         });
 
+
         // lấy thông tin người dùng show lên
         setUserInfomation();
 
         initListener();
-
     }
 
+    // Đặt hàm này trong AdminEditProfileActivity
+    private void initCloudinary() {
+        try {
+            HashMap<String, String> config = new HashMap<>();
+            config.put("cloud_name", "dbtbj5s8w");
+            config.put("api_key", "386422764289541");
+            config.put("api_secret", "mPewAja1mvna9PuuhAcrTLLeYoE");
+
+            MediaManager.init(this, config);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void setUserInfomation(){
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -180,19 +203,20 @@ public class AdminEditProfileActivity extends AppCompatActivity {
                     edtPhone.setText(userProfile.getPhoneNumber());
                     edtGender.setText(userProfile.getGender());
                     edtDob.setText(userProfile.getDob());
-                    edtCccd.setText(userProfile.getCccd());
+                    edtCccd.setText(userProfile.getCitizenCard());
                     // Kiểm tra và load ảnh bằng Glide
-                    if (!userProfile.getAvatar().isEmpty()) {
+                    String avatarUrl = userProfile.getAvatar();
+                    if (avatarUrl != null && !avatarUrl.isEmpty()) {
                         Glide.with(this)
                                 .load(userProfile.getAvatar())
-                                .placeholder(R.drawable.avatar_default) // Ảnh hiện trong lúc chờ tải
+                                .placeholder(R.drawable.ic_nav_profile) // Ảnh hiện trong lúc chờ tải
                                 .error(R.drawable.ic_nav_profile)         // Ảnh hiện nếu bị lỗi
                                 .into(imgAvatar);
 
                         // ảnh small
                         Glide.with(this)
                                 .load(userProfile.getAvatar())
-                                .placeholder(R.drawable.avatar_default) // Ảnh hiện trong lúc chờ tải
+                                .placeholder(R.drawable.ic_nav_profile) // Ảnh hiện trong lúc chờ tải
                                 .error(R.drawable.ic_nav_profile)         // Ảnh hiện nếu bị lỗi
                                 .into(imgSmallAvatar);
                     }
@@ -201,19 +225,20 @@ public class AdminEditProfileActivity extends AppCompatActivity {
                 // Xử lý lỗi nếu không tìm thấy dữ liệu
                 Toast.makeText(this, "Không thể tải dữ liệu người dùng!", Toast.LENGTH_SHORT).show();
             }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Lỗi kết nối: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
     //
     private void initListener(){
         // sự kiện lưu ảnh
-        imgchangeAvatar.setOnClickListener(v -> {
+        imgChangeAvatar.setOnClickListener(v -> {
             onClickRequestPermission();
         });
 
         // sk lưu thông tin
         btnSaveChanges.setOnClickListener(view -> {
-//            onClickUpdateProfile();
-
+            onClickUpdateProfile();
         });
 
     }
@@ -244,7 +269,16 @@ public class AdminEditProfileActivity extends AppCompatActivity {
         }
     }
 
-    // nhận kết quả
+    public void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    }
+
+
+
+    // nhận kết quả khi người dùng từ chối mở quyền kho ảnh
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -258,52 +292,116 @@ public class AdminEditProfileActivity extends AppCompatActivity {
             }
         }
     }
-    public void openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+
+    // upload lên Cloudinary
+    private void uploadImageToCloudinary(Uri imageUri, HashMap<String, Object> updates,
+                                         DatabaseReference mDatabase, FirebaseUser currentUser, String newName) {
+
+        MediaManager.get().upload(imageUri)
+                .preprocess(ImagePreprocessChain.limitDimensionsChain(1000, 1000)
+                        .addStep(new DimensionsValidator(10, 10, 1000, 1000))
+                        .saveWith(new BitmapEncoder(BitmapEncoder.Format.WEBP, 80)))
+                .callback(new UploadCallback() {
+            @Override
+            public void onStart(String requestId) {
+                // Bắt đầu upload
+            }
+
+            @Override
+            public void onProgress(String requestId, long bytes, long totalBytes) {
+
+            }
+
+            @Override
+            public void onSuccess(String requestId, Map resultData) {
+                // Lấy link ảnh (https) trả về từ Cloudinary
+                String imageUrl = (String) resultData.get("secure_url");
+
+                updates.put("avatar", imageUrl);
+
+                // Cập nhật Firebase
+                Uri photoUri = Uri.parse(imageUrl);
+                updateDataToDatabase(currentUser, mDatabase, updates, newName, photoUri);
+            }
+
+            @Override
+            public void onError(String requestId, com.cloudinary.android.callback.ErrorInfo error) {
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(AdminEditProfileActivity.this, "Lỗi tải ảnh lên: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onReschedule(String requestId, com.cloudinary.android.callback.ErrorInfo error) {
+            }
+        }).dispatch(this);
     }
 
-    // set bitmap
-    public void setBitmapImageView(Bitmap bitmapImageView){
-        imgSmallAvatar.setImageBitmap(bitmapImageView);
+    private void updateDataToDatabase(FirebaseUser currentUser,
+                                      DatabaseReference dbRef, HashMap<String, Object> updates, String newName, Uri newPhotoUri) {
+
+        // Cập nhật vào Realtime Database
+        dbRef.updateChildren(updates).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+
+                //  Cập nhật UserProfile của Firebase Auth
+                UserProfileChangeRequest.Builder profileUpdatesBuilder = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(newName);
+                if (newPhotoUri != null) {
+                    profileUpdatesBuilder.setPhotoUri(newPhotoUri);
+                }
+                UserProfileChangeRequest profileUpdates = profileUpdatesBuilder.build();
+
+                currentUser.updateProfile(profileUpdates).addOnCompleteListener(authTask -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(AdminEditProfileActivity.this, "Cập nhật hồ sơ thành công!", Toast.LENGTH_SHORT).show();
+                    finish(); // Đóng màn hình Edit, quay lại màn hình Profile
+                });
+
+            } else {
+                progressDialog.dismiss();
+                Toast.makeText(AdminEditProfileActivity.this, "Cập nhật Database thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+
 
     // update profile trên trang firebase
-//    public void onClickUpdateProfile() {
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user == null) {
-//            return;
-//        }
-//
-//        String strFullName = edtFullName.getText().toString().trim();
-//        String strPhone = edtPhone.getText().toString().trim();
-//        String strGender = edtGender.getText().toString().trim();
-//        String strDob = edtDob.getText().toString().trim();
-//        String strCccd = edtCccd.getText().toString().trim();
-//
-//        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                .setDisplayName(strFullName)
-//                .setDisplayName(strPhone)
-//                .setDisplayName(strGender)
-//                .setDisplayName(strDob)
-//                .setDisplayName(strCccd)
-//                .setPhotoUri(muri)
-//                .build();
-//
-//        user.updateProfile(profileUpdates)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
-//
-//                        }
-//                    }
-//                });
-//    }
+    public void onClickUpdateProfile() {
+        FirebaseUser currentUser = mAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        String strFullName = edtFullName.getText().toString().trim();
+        String strPhone = edtPhone.getText().toString().trim();
+        String strGender = edtGender.getText().toString().trim();
+        String strDob = edtDob.getText().toString().trim();
+        String strCccd = edtCccd.getText().toString().trim();
 
 
+
+        progressDialog.setMessage("Đang Xử lý");
+        progressDialog.show();
+
+
+        String uid = currentUser.getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+
+        HashMap<String, Object> updates = new HashMap<>();
+        updates.put("fullName", strFullName);
+        updates.put("phoneNumber", strPhone);
+        updates.put("gender", strGender);
+        updates.put("dob", strDob);
+        updates.put("citizenCard", strCccd);
+
+        if (muri != null) {
+
+            uploadImageToCloudinary(muri, updates, mDatabase, currentUser, strFullName);
+        } else {
+            updateDataToDatabase(currentUser, mDatabase, updates, strFullName, null);
+
+        }
+    }
 
 }

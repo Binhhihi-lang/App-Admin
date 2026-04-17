@@ -3,11 +3,13 @@ package com.example.admin_app.Fragment;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin_app.Activities.AdminEditProfileActivity;
 import com.example.admin_app.Activities.LoginActivity;
 import com.example.admin_app.Models.User;
@@ -31,6 +34,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -93,6 +97,7 @@ public class ProfileFragment extends Fragment {
 
         // Hiển thị thông tin người dùng
         loadUserData();
+
         return view;
 
     }
@@ -138,51 +143,52 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    public void loadUserData(){
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+    private void loadUserData() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if(currentUser == null){
-            return;
-        }
-
-        // Lấy UID của user đang đăng nhập
         String uid = currentUser.getUid();
+        // tham chiếu User trong cddl
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+        if (userRef == null) return;
+        //  addValueEventListener cập nhật ngay
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    User userProfile = snapshot.getValue(User.class);
+                    if (userProfile != null) {
+                        // Đổ dữ liệu lên TextView
+                        tvFullName.setText(userProfile.getFullName());
+                        tvEmail.setText(userProfile.getEmail());
+                        tvPhone.setText(userProfile.getPhoneNumber());
+                        // Kiểm tra và load ảnh bằng Glide
+                        String avatarUrl = userProfile.getAvatar();
+                        if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                            Glide.with(requireContext())
+                                    .load(avatarUrl)
+                                    .placeholder(R.drawable.ic_nav_profile)
+                                    .error(R.drawable.ic_nav_profile)
+                                    .into(imgAvatar);
 
-        // Truy cập vào nhánh "Users"
-        mDatabase.child("Users").child(uid).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult().exists()) {
-                // Ép kiểu dữ liệu lấy về thành class User
-                User userProfile = task.getResult().getValue(User.class);
-
-                if (userProfile != null) {
-                    // Đổ dữ liệu từ model User lên EditText
-                    tvFullName.setText(userProfile.getFullName());
-                    tvEmail.setText(userProfile.getEmail());
-                    // Kiểm tra và load ảnh bằng Glide
-                    if (userProfile.getAvatar() == null && !userProfile.getAvatar().isEmpty()) {
-                        Glide.with(this)
-                                .load(userProfile.getAvatar())
-                                .placeholder(R.drawable.avatar_default) // Ảnh hiện trong lúc chờ tải
-                                .error(R.drawable.ic_nav_profile)         // Ảnh hiện nếu bị lỗi
-                                .into(imgAvatar);
-
-                        // ảnh small
-                        Glide.with(this)
-                                .load(userProfile.getAvatar())
-                                .placeholder(R.drawable.avatar_default) // Ảnh hiện trong lúc chờ tải
-                                .error(R.drawable.ic_nav_profile)         // Ảnh hiện nếu bị lỗi
-                                .into(imgSmallAvatar);
+                            // ảnh small
+                            Glide.with(requireContext())
+                                    .load(avatarUrl)
+                                    .placeholder(R.drawable.ic_nav_profile) // Ảnh hiện trong lúc chờ tải
+                                    .error(R.drawable.ic_nav_profile)
+                                    .into(imgSmallAvatar);
+                        }
                     }
                 }
-            } else {
-                // Xử lý lỗi nếu không tìm thấy dữ liệu
-                Toast.makeText(getActivity(), "Không thể tải dữ liệu người dùng!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+                Toast.makeText(getActivity(), "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
+// Xử lý lỗi nếu không tìm thấy dữ liệu
 }

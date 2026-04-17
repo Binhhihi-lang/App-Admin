@@ -49,6 +49,12 @@ dependencies {
     // google
     implementation("com.google.android.gms:play-services-auth:21.3.0")
 
+    // Cloudinary
+    implementation("com.cloudinary:cloudinary-android:3.1.2")
+    // Download + Preprocess:
+    implementation("com.cloudinary:cloudinary-android-download:3.1.2")
+    implementation("com.cloudinary:cloudinary-android-preprocess:3.1.2")
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

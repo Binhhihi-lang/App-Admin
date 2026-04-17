@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.bumptech.glide.Glide;
 import com.example.admin_app.Models.User;
 import com.example.admin_app.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -83,7 +84,24 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        Button btnGoogle = findViewById(R.id.btn_google_login);
+         //Tải icon Google glide
+//        Glide.with(this)
+//                .load("https://img.icons8.com/color/48/000000/google-logo.png")
+//                .into(new CustomTarget<Drawable>() { // xử lý
+//                    // khi tải xong
+//                    @Override
+//                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+//                        // Thiết kế kích thước icon (tùy chọn)
+//                        resource.setBounds(0, 0, 60, 60);
+//                        btnGoogle.setIcon(resource);
+//                    }
+//                    //
+//                    @Override
+//                    public void onLoadCleared(@Nullable Drawable placeholder) {
+//                        btnGoogle.setIcon(null);
+//                    }
+//                });
 
         tvGoToSignUp = findViewById(R.id.tv_create_account);
         tvGoToSignUp.setOnClickListener(v -> {
