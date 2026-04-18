@@ -164,7 +164,7 @@ public class AdminEditProfileActivity extends AppCompatActivity {
         initListener();
     }
 
-    // Đặt hàm này trong AdminEditProfileActivity
+    // khởi tạo Cloudinary
     private void initCloudinary() {
         try {
             HashMap<String, String> config = new HashMap<>();
@@ -276,8 +276,6 @@ public class AdminEditProfileActivity extends AppCompatActivity {
         mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
-
-
     // nhận kết quả khi người dùng từ chối mở quyền kho ảnh
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -367,7 +365,6 @@ public class AdminEditProfileActivity extends AppCompatActivity {
     }
 
 
-
     // update profile trên trang firebase
     public void onClickUpdateProfile() {
         FirebaseUser currentUser = mAuth.getInstance().getCurrentUser();
@@ -379,11 +376,8 @@ public class AdminEditProfileActivity extends AppCompatActivity {
         String strDob = edtDob.getText().toString().trim();
         String strCccd = edtCccd.getText().toString().trim();
 
-
-
         progressDialog.setMessage("Đang Xử lý");
         progressDialog.show();
-
 
         String uid = currentUser.getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(uid);

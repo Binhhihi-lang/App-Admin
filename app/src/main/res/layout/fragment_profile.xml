@@ -85,8 +85,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Quản trị viên hệ thống"
-                android:textColor="#757575"
-                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +140,7 @@
                         android:text="Họ và tên"
                         android:textSize="13sp"
                         android:layout_marginBottom="6dp"
-                        android:textColor="#757575" />
+                        android:textColor="@color/text_label" />
 
                     <TextView
                         android:id="@+id/tvNameDisplay"
@@ -149,7 +149,7 @@
                         android:gravity="center_vertical"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="Nguyễn Xuân Ly"
+                        android:hint="Nguyễn Xuân A"
                         android:textColor="@color/text_title"
                         android:textSize="15sp"
                         android:drawableStart="@drawable/ic_profile_card"
@@ -162,7 +162,7 @@
                         android:text="Email"
                         android:layout_marginTop="14dp"
                         android:layout_marginBottom="6dp"
-                        android:textColor="#757575" />
+                        android:textColor="@color/text_label" />
 
                     <TextView
                         android:id="@+id/tvEmailDisplay"
@@ -184,7 +184,7 @@
                         android:text="Số điện thoại"
                         android:layout_marginTop="14dp"
                         android:layout_marginBottom="6dp"
-                        android:textColor="#757575" />
+                        android:textColor="@color/text_label" />
 
                     <TextView
                         android:id="@+id/tvPhoneDisplay"

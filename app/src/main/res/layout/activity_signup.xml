@@ -163,7 +163,7 @@
         app:backgroundTint="@null"
         android:text="@string/btn_signup"
         android:textAllCaps="false"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_size_subtitle"
         app:cornerRadius="@dimen/button_corner_radius"
         app:layout_constraintEnd_toEndOf="@id/til_password"
         app:layout_constraintHorizontal_bias="0.0"
@@ -195,10 +195,8 @@
         android:layout_height="56dp"
         android:layout_marginTop="@dimen/spacing_medium"
         android:backgroundTint="@color/social_button_bg"
-
         android:insetTop="0dp"
         android:insetBottom="0dp"
-
         android:text="@string/btn_google_signin"
         android:textSize="@dimen/text_size_button"
         android:textAllCaps="false"

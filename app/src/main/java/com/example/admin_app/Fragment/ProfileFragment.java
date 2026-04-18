@@ -41,9 +41,9 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class ProfileFragment extends Fragment {
-    TextView tvFullName,tvEmail,tvPhone;
+    TextView tvFullName, tvEmail, tvPhone;
     ImageView imgAvatar, imgSmallAvatar, imgUpdateView;
-    MaterialToolbar toolbar ;
+    MaterialToolbar toolbar;
     MaterialButton btnLogout;
 
     FirebaseAuth mAuth;
@@ -59,7 +59,7 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // sang trang update
+
         imgUpdateView = view.findViewById(R.id.imgEditProfile);
         toolbar = view.findViewById(R.id.toolbarInfoProfile);
         btnLogout = view.findViewById(R.id.btnLogout);
@@ -67,11 +67,11 @@ public class ProfileFragment extends Fragment {
         tvEmail = view.findViewById(R.id.tvEmailDisplay);
         tvPhone = view.findViewById(R.id.tvPhoneDisplay);
         imgAvatar = view.findViewById(R.id.imgAvatar);
-        imgSmallAvatar = view .findViewById(R.id.imgSmallAvatar);
+        imgSmallAvatar = view.findViewById(R.id.imgSmallAvatar);
 
 
         // sang trang chỉnh sửa thông tin
-        imgUpdateView.setOnClickListener(v->{
+        imgUpdateView.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AdminEditProfileActivity.class);
             startActivity(intent);
 
@@ -79,7 +79,7 @@ public class ProfileFragment extends Fragment {
 
 
         // trở về trang chủ
-        toolbar.setNavigationOnClickListener(view1 ->{
+        toolbar.setNavigationOnClickListener(view1 -> {
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
             bottomNav.setSelectedItemId(R.id.nav_dashboard);
         });
@@ -102,6 +102,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    // dialog xác nhận hủy
     private void showLogoutDialog() {
         // Dùng getActivity() hoặc requireContext() làm context cho Dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -120,25 +121,24 @@ public class ProfileFragment extends Fragment {
         dialog.show();
     }
 
+    // đăng xuất
     private void performLogout() {
         // Đăng xuất Firebase
         FirebaseAuth.getInstance().signOut();
 
         // Đăng xuất Google
-        gClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (isAdded()) { // Kiểm tra xem Fragment còn gắn với Activity không để tránh crash
-                    Toast.makeText(getActivity(), "Đã đăng xuất thành công!", Toast.LENGTH_SHORT).show();
+        gClient.signOut().addOnCompleteListener(task -> {
+            if (isAdded()) { // Kiểm tra xem Fragment còn gắn với Activity không để tránh crash
+                Toast.makeText(getActivity(), "Đã đăng xuất thành công!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    // Xóa sạch Stack để không quay lại được trang Admin
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                // Xóa sạch Stack để không quay lại được trang Admin
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
 
-                    // Fragment gọi finish thông qua Activity
-                    requireActivity().finish();
-                }
+                //
+                requireActivity().finish();
+
             }
         });
     }
@@ -190,5 +190,5 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-// Xử lý lỗi nếu không tìm thấy dữ liệu
+
 }
